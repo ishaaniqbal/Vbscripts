@@ -1,0 +1,45 @@
+Sub Find_Matches()
+
+Dim CompareRange As Variant, x As Variant, y As Variant
+
+' Set CompareRange equal to the range to which you will
+
+' compare the selection.
+
+Set CompareRange = Range("C2:C18017")
+
+' NOTE: If the compare range is located on another workbook
+
+' or worksheet, use the following syntax.
+
+' Set CompareRange = Workbooks("Book3"). _
+
+' Worksheets("Sheet1").Range("C2:C18017")
+
+'
+
+' Loop through each cell in the selection and compare it to
+
+' each cell in CompareRange.
+
+For Each x In Selection
+
+For Each y In CompareRange
+
+If x = y Then x.Offset(0, 1) = x
+
+Next y
+
+Next x
+
+End Sub
+
+ 
+
+ 
+
+ 
+
+ 
+
+=VLOOKUP($A$2:$A$63228;$D$2:$D$63228;TRUE;FALSE)
