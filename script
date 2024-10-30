@@ -1,0 +1,63 @@
+Option Explicit
+
+' Define Excel and File System Objects
+Dim excelApp, workbook, sheet
+Dim fso, textFile
+Dim rowCount, colCount, i, j
+Dim fixedLengthLine, outputFile
+
+' Path to your Excel file
+Const excelFilePath = "C:\path\to\your\file.xlsx"
+' Path where the output text file will be saved
+Const outputFilePath = "C:\path\to\your\output.txt"
+
+' Create Excel Application and open the workbook
+Set excelApp = CreateObject("Excel.Application")
+Set workbook = excelApp.Workbooks.Open(excelFilePath)
+Set sheet = workbook.Sheets(1) ' Adjust the sheet index if needed
+
+' Create File System Object to create a text file
+Set fso = CreateObject("Scripting.FileSystemObject")
+Set textFile = fso.CreateTextFile(outputFilePath, True)
+
+' Get the number of rows and columns
+rowCount = sheet.UsedRange.Rows.Count
+colCount = sheet.UsedRange.Columns.Count
+
+' Loop through each row
+For i = 1 To rowCount
+    fixedLengthLine = ""
+    
+    ' Loop through each column
+    For j = 1 To colCount
+        ' Get the cell value and pad it to a fixed length of 10 characters
+        Dim cellValue
+        cellValue = CStr(sheet.Cells(i, j).Value)
+        
+        ' Adjust the length as needed, here it's set to 10
+        If Len(cellValue) < 10 Then
+            cellValue = cellValue & Space(10 - Len(cellValue))
+        ElseIf Len(cellValue) > 10 Then
+            cellValue = Left(cellValue, 10) ' Truncate to 10 characters
+        End If
+        
+        ' Append the fixed length value to the line
+        fixedLengthLine = fixedLengthLine & cellValue
+    Next
+
+    ' Write the line to the text file
+    textFile.WriteLine fixedLengthLine
+Next
+
+' Clean up
+textFile.Close
+workbook.Close False
+excelApp.Quit
+
+Set textFile = Nothing
+Set fso = Nothing
+Set sheet = Nothing
+Set workbook = Nothing
+Set excelApp = Nothing
+
+WScript.Echo "Data exported to " & outputFilePath
